@@ -13,7 +13,8 @@ long_description = "".join(lines)
 
 setup(
     name="libero",
-    packages=[package for package in find_packages() if package.startswith("libero")],
+    package_dir={"": "libero"},
+    packages=find_packages(where="libero"),
     install_requires=[],
     eager_resources=["*"],
     include_package_data=True,
