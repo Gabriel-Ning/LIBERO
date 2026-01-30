@@ -1,6 +1,7 @@
 """
 Download functionalities adapted from Mandlekar et. al.: https://github.com/ARISE-Initiative/robomimic/blob/master/robomimic/utils/file_utils.py
 """
+
 import os
 import time
 from tqdm import tqdm
@@ -16,6 +17,7 @@ from libero.libero import get_libero_path
 try:
     from huggingface_hub import snapshot_download
     import shutil
+
     HUGGINGFACE_AVAILABLE = True
 except ImportError:
     HUGGINGFACE_AVAILABLE = False
@@ -111,7 +113,7 @@ HF_REPO_ID = "yifengzhu-hf/LIBERO-datasets"
 def download_from_huggingface(dataset_name, download_dir, check_overwrite=True):
     """
     Download a specific LIBERO dataset from Hugging Face.
-    
+
     Args:
         dataset_name (str): Name of the dataset to download (e.g., 'libero_spatial')
         download_dir (str): Directory where the dataset should be downloaded
@@ -121,10 +123,10 @@ def download_from_huggingface(dataset_name, download_dir, check_overwrite=True):
         raise ImportError(
             "Hugging Face Hub is not available. Install it with 'pip install huggingface_hub'"
         )
-    
+
     # Create the destination folder
     os.makedirs(download_dir, exist_ok=True)
-    
+
     # Check if dataset already exists
     dataset_dir = os.path.join(download_dir, dataset_name)
     if check_overwrite and os.path.exists(dataset_dir):
@@ -134,11 +136,11 @@ def download_from_huggingface(dataset_name, download_dir, check_overwrite=True):
         if user_response.lower() not in {"yes", "y"}:
             print(f"Skipping download of {dataset_name}")
             return
-        
+
         # Remove existing directory
         print(f"Removing existing folder: {dataset_dir}")
         shutil.rmtree(dataset_dir)
-    
+
     # Download the dataset
     print(f"Downloading {dataset_name} from Hugging Face...")
     folder_path = snapshot_download(
@@ -146,16 +148,24 @@ def download_from_huggingface(dataset_name, download_dir, check_overwrite=True):
         repo_type="dataset",
         local_dir=download_dir,
         allow_patterns=f"{dataset_name}/*",
-        local_dir_use_symlinks=False,  # Prevents using symlinks to cached files
-        force_download=True  # Forces re-downloading files
+        cache_dir=os.environ.get(
+            "HF_HOME", os.path.join(os.path.expanduser("~"), ".cache", "huggingface")
+        ),
     )
-    
+
     # Verify downloaded files
-    file_count = sum([len(files) for _, _, files in os.walk(os.path.join(download_dir, dataset_name))])
+    file_count = sum(
+        [
+            len(files)
+            for _, _, files in os.walk(os.path.join(download_dir, dataset_name))
+        ]
+    )
     print(f"Downloaded {file_count} files for {dataset_name}")
 
 
-def libero_dataset_download(datasets="all", download_dir=None, check_overwrite=True, use_huggingface=False):
+def libero_dataset_download(
+    datasets="all", download_dir=None, check_overwrite=True, use_huggingface=False
+):
     """Download libero datasets
 
     Args:
@@ -175,23 +185,31 @@ def libero_dataset_download(datasets="all", download_dir=None, check_overwrite=T
         "libero_goal",
         "libero_spatial",
         "libero_100",
+        "libero_10",
+        "libero_90",
     ]
 
-    datasets_to_download = [
-        "libero_object",
-        "libero_goal",
-        "libero_spatial",
-        "libero_100",
-    ] if datasets == "all" else [datasets]
+    datasets_to_download = (
+        [
+            "libero_object",
+            "libero_goal",
+            "libero_spatial",
+            "libero_100",
+            "libero_10",
+            "libero_90",
+        ]
+        if datasets == "all"
+        else [datasets]
+    )
 
     for dataset_name in datasets_to_download:
         print(f"Downloading {dataset_name}")
-        
+
         if use_huggingface:
             download_from_huggingface(
                 dataset_name=dataset_name,
                 download_dir=download_dir,
-                check_overwrite=check_overwrite
+                check_overwrite=check_overwrite,
             )
         else:
             print("Using original download links (these may expire soon)")

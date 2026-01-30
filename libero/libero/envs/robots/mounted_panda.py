@@ -19,17 +19,23 @@ class MountedPanda(ManipulatorModel):
             attrib="damping", values=np.array((0.1, 0.1, 0.1, 0.1, 0.1, 0.01, 0.01))
         )
 
+    arms = ["right"]
+
+    @property
+    def default_base(self):
+        return "NullMount"
+
     @property
     def default_mount(self):
         return "RethinkMount"
 
     @property
     def default_gripper(self):
-        return "PandaGripper"
+        return {"right": "PandaGripper"}
 
     @property
     def default_controller_config(self):
-        return "default_panda"
+        return {"right": "default_panda"}
 
     @property
     def init_qpos(self):
