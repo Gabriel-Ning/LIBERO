@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import robosuite as suite
+import cv2
 import matplotlib.cm as cm
 
 from robosuite.utils.errors import RandomizationError
@@ -47,6 +48,24 @@ class ControlEnv:
         from robosuite.controllers import load_part_controller_config
 
         controller_configs = load_part_controller_config(default_controller=controller)
+
+        # Patch for new robosuite compatibility: wrap part controller in composite configuration
+        if "type" not in controller_configs:
+            controller_configs["type"] = controller
+
+        if controller_configs["type"] in [
+            "OSC_POSE",
+            "OSC_POSITION",
+            "IK_POSE",
+            "JOINT_VELOCITY",
+            "JOINT_TORQUE",
+            "JOINT_POSITION",
+        ]:
+            controller_configs = {
+                "type": "BASIC",
+                "body_parts": {"right": controller_configs},
+            }
+            controller_configs["body_parts"]["right"]["gripper"] = {"type": "GRIP"}
 
         problem_info = BDDLUtils.get_problem_info(bddl_file_name)
         # Check if we're using a multi-armed environment and use env_configuration argument if so

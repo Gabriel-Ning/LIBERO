@@ -20,16 +20,22 @@ class OnTheGroundPanda(ManipulatorModel):
         )
 
     @property
+    def default_base(self):
+        return "NullMount"
+
+    @property
     def default_mount(self):
         return None
 
+    arms = ["right"]
+
     @property
     def default_gripper(self):
-        return "PandaGripper"
+        return {"right": "PandaGripper"}
 
     @property
     def default_controller_config(self):
-        return "default_panda"
+        return {"right": "default_panda"}
 
     @property
     def init_qpos(self):
