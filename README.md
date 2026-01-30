@@ -59,6 +59,7 @@ pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --e
 Then install the `libero` package:
 ```
 pip install -e .
+python scripts/setup_libero_paths.py
 ```
 
 # Datasets
@@ -178,7 +179,7 @@ If you find **LIBERO** to be useful in your own research, please consider citing
 ```
 
 # License
-| Component        | License                                                                                                                             |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| Codebase         | [MIT License](LICENSE)                                                                                                                      |
-| Datasets         | [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/legalcode)                 |
+| Component | License                                                                                                             |
+| --------- | ------------------------------------------------------------------------------------------------------------------- |
+| Codebase  | [MIT License](LICENSE)                                                                                              |
+| Datasets  | [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/legalcode) |

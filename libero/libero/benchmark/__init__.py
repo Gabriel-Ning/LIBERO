@@ -76,8 +76,9 @@ for libero_suite in libero_suites:
             init_states_file=f"{task}.pruned_init",
         )
 
-        # print(language, "\n", f"{task}.bddl", "\n")
-        # print("")
+task_maps["libero_100"] = {}
+task_maps["libero_100"].update(task_maps["libero_10"])
+task_maps["libero_100"].update(task_maps["libero_90"])
 
 
 task_orders = [
@@ -114,7 +115,7 @@ class Benchmark(abc.ABC):
 
     def _make_benchmark(self):
         tasks = list(task_maps[self.name].values())
-        if self.name == "libero_90":
+        if self.name in ["libero_90", "libero_100"]:
             self.tasks = tasks
         else:
             print(f"[info] using task orders {task_orders[self.task_order_index]}")
