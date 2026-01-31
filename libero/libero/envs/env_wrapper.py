@@ -16,6 +16,8 @@ class ControlEnv:
         bddl_file_name,
         robots=["Panda"],
         controller="OSC_POSE",
+        controller_configs=None,
+        base_types="default",
         gripper_types="default",
         initialization_noise=None,
         use_camera_obs=True,
@@ -47,7 +49,10 @@ class ControlEnv:
 
         from robosuite.controllers import load_part_controller_config
 
-        controller_configs = load_part_controller_config(default_controller=controller)
+        if controller_configs is None:
+            controller_configs = load_part_controller_config(
+                default_controller=controller
+            )
 
         # Patch for new robosuite compatibility: wrap part controller in composite configuration
         if "type" not in controller_configs:
@@ -78,6 +83,7 @@ class ControlEnv:
             bddl_file_name,
             robots=robots,
             controller_configs=controller_configs,
+            base_types=base_types,
             gripper_types=gripper_types,
             initialization_noise=initialization_noise,
             use_camera_obs=use_camera_obs,
